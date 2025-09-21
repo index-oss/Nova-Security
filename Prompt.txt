@@ -1,0 +1,209 @@
+<ProjectPrompt name="NovaSecurity" type="ProfessionalBrief">
+  <Context>
+    A modular Python-based local & network vulnerability scanner and optional remote monitoring agent.
+    Must be production-quality, secure, well-tested, and documented.
+  </Context>
+
+  <Objective>
+    Deliver a maintainable Python 3.10+ codebase implementing:
+    - Local scanning agent
+    - Version checking + CVE lookup (online/offline)
+    - Remote upload API (Flask/FastAPI)
+    - Markdown/PDF reporting
+    - Config management (.env), tests, CI
+  </Objective>
+
+  <Principles>
+    <Item>Legal & Ethical: Use only on authorized systems.</Item>
+    <Item>Security: No secrets in repo, safe subprocess use.</Item>
+    <Item>Safety: Read-only scans by default.</Item>
+    <Item>Quality: Type hints, docstrings, modular code.</Item>
+    <Item>Reproducibility: CLI entrypoints and sample outputs required.</Item>
+  </Principles>
+
+  <Scope>
+    <Feature id="1" name="CLI Agent">nova_agent.py with flags: --scan, --cve, --upload, --full, --out</Feature>
+    <Feature id="2" name="Local Scan">Processes, ports, banners, system info</Feature>
+    <Feature id="3" name="Version Checker">Compare installed versions via packaging.version</Feature>
+    <Feature id="4" name="CVE Lookup">Vulners API (with key), fallback to offline JSON</Feature>
+    <Feature id="5" name="Remote Upload">Flask/FastAPI endpoint for JSON POST</Feature>
+    <Feature id="6" name="Reporting">Markdown + optional PDF reports</Feature>
+    <Feature id="7" name="Config">.env.example with API keys and DB URL</Feature>
+    <Feature id="8" name="Testing">pytest suite, GitHub Actions CI</Feature>
+    <Feature id="9" name="Documentation">README, CONTRIBUTING, CHANGELOG</Feature>
+  </Scope>
+
+  <Deliverables>
+    <RepoStructure>
+      nova_agent.py
+      recon/
+      vuln/
+      reporting/
+      server/
+      tests/
+      examples/
+      requirements.txt
+      pyproject.toml
+      .env.example
+      README.md
+      .github/workflows/ci.yml
+    </RepoStructure>
+  </Deliverables>
+
+  <Standards>
+    <Item>Python 3.10+</Item>
+    <Item>Type hints and Google-style docstrings</Item>
+    <Item>Linting: black, flake8</Item>
+    <Item>No eval/exec, safe subprocess only</Item>
+  </Standards>
+
+  <Testing>
+    <Unit>Parsers, API clients, vuln matchers</Unit>
+    <Integration>End-to-end scan with sample output</Integration>
+    <Security>Ensure malicious inputs are blocked</Security>
+  </Testing>
+
+  <Timeline>
+    <Milestone day="0-2">Repo skeleton, recon basics</Milestone>
+    <Milestone day="3-5">CVE lookup + offline mode</Milestone>
+    <Milestone day="6-9">Reporting module + tests</Milestone>
+    <Milestone day="10-14">Server API, CI, docs</Milestone>
+  </Timeline>
+
+  <AcceptanceCriteria>
+    <Item>nova_agent.py --scan outputs recon.json</Item>
+    <Item>nova_agent.py --cve processes recon.json → findings.json</Item>
+    <Item>reporting/generator.py outputs latest.md/pdf</Item>
+    <Item>All tests pass, CI green</Item>
+    <Item>README includes legal warning + quickstart</Item>
+  </AcceptanceCriteria>
+
+  <LegalWarning>
+    Use only on systems you own or have explicit permission to test.
+    Unauthorized scanning is illegal and unethical.
+  </LegalWarning>
+</ProjectPrompt>
+
+ROLE: Senior Python Developer / Security Engineer (contractor)
+
+CONTEXT:
+You will build the Nova Security project: a modular Python-based local & network vulnerability scanner and optional remote monitoring agent. The tool must be production-quality, secure-by-design, well-tested, and documented. This brief assumes you have experience with system/network tooling, packaging Python apps, API integrations (Vulners), and secure coding practices.
+
+OBJECTIVE:
+Deliver a maintainable codebase (Python 3.10+) implementing a reliable Nova Security MVP:
+- Local scanning agent (processes, ports, banners)
+- Version checking + CVE lookup (Vulners API and offline mode)
+- Remote upload API (Flask/FastAPI optional)
+- Markdown report generation (exportable to PDF)
+- Clear README, .env.example, tests, and CI pipeline
+
+PRINCIPLES & NON-NEGOTIABLES:
+1. LEGAL & ETHICAL: Do not scan systems without explicit authorization. Add clear warnings in README and CLI help.
+2. SECURITY: Never embed secrets in repo. Use .env for local dev and CI secrets for pipelines.
+3. SAFETY: Any active tests must run only against local VMs or explicitly authorized targets.
+4. QUALITY: Follow clean code, modularity, and automated tests. Use type hints and docstrings.
+5. REPRODUCIBILITY: CLI entrypoints and sample outputs must be provided.
+
+SCOPE & CORE FEATURES (MVP):
+1. CLI agent: `nova_agent.py`
+   - Flags: `--scan`, `--cve`, `--upload`, `--full`, `--out <dir>`
+   - Produce JSON/Markdown outputs and structured logs.
+
+2. Local Scan
+   - Processes (psutil), listening network ports (socket/nmap/httpx), basic banner grabbing via TCP connect.
+   - Platform info (os, kernel, python version).
+
+3. Version Checker
+   - Extract installed package/software versions where feasible.
+   - Compare using `packaging.version` semantics.
+
+4. CVE Lookup
+   - Primary: Vulners API with API key from `.env`.
+   - Fallback: simple local CVE JSON file for offline mode.
+
+5. Remote Upload API (optional server)
+   - Minimal Flask or FastAPI endpoint that accepts JSON POST from agent, validates API key, stores to file or Mongo/SQLite.
+
+6. Reporting
+   - `reporting/generator.py` produces Markdown report including CVSS and metadata.
+   - Add CLI command to convert Markdown → PDF via `pandoc` if available.
+
+7. Config & Secrets
+   - `.env.example` containing placeholders:
+     OPENAI_API_KEY=
+     VULNERS_API_KEY=
+     REMOTE_DB_URL=
+     REMOTE_API_KEY=
+
+8. Tests & CI
+   - Unit tests for parsers, prompt builders, and API clients (pytest).
+   - GitHub Actions workflow: lint (flake8/black), pytest, safety check.
+
+9. Documentation
+   - `README.md` with Quickstart, Usage, Examples, Legal warning, and Architecture diagram (ASCII or image).
+   - `CHANGELOG.md` and `CONTRIBUTING.md` skeleton.
+
+DELIVERABLES (by feature-complete milestone):
+- Repo with structure:
+  /nova_agent.py
+  /recon/ (scanner modules)
+  /vuln/ (vulners client, offline DB loader)
+  /reporting/ (generator + templates)
+  /server/ (optional API)
+  /tests/
+  requirements.txt / pyproject.toml
+  .env.example, README.md, .github/workflows/ci.yml
+
+- Demo run: sample outputs in `/examples/` (live.txt, recon.json, report.md, report.pdf)
+
+CODE STANDARDS:
+- Python 3.10+, type hints, docstrings (Google or NumPy style), modular design.
+- Static analysis: black formatter, flake8 linting rules.
+- Do not use `shell=True` or `eval`/`exec`. Any subprocess usage must be safe and sanitized.
+
+SECURITY & SANDBOXING:
+- Execution must not allow arbitrary command injection.
+- No network writes or remote code execution by default; agent gathers read-only artifacts.
+- If running any third-party scanning CLI (e.g., nmap), call it as subprocess with controlled args and validate outputs.
+- CVE client must safely handle timeouts and failures.
+
+TESTING:
+- Unit tests for parser logic and vuln-matching.
+- Integration test demonstrating end-to-end run on a local VM (or mocked outputs).
+- Security test: feed malicious patterns to ensure they are flagged/blocked by safety rules.
+
+COMMUNICATION & REPORTING:
+- Provide daily short status updates (what was done, blockers, next tasks).
+- Open PRs for incremental features; each PR must include tests and CI green.
+
+TIMELINE (example; adjustable):
+- Days 0–2: repo skeleton, .env.example, recon basic (subfinder/httpx wrappers or native Python alternatives).
+- Days 3–5: vuln lookup (Vulners client), offline mode, version checker.
+- Days 6–9: reporting generator, sample reports, tests.
+- Days 10–14: optional server, CI, packaging, docs.
+
+ACCEPTANCE CRITERIA:
+- `python nova_agent.py --scan --out examples/` runs on a local dev machine and produces `recon.json`.
+- `python nova_agent.py --cve --input examples/recon.json` produces `findings.json` with CVE references.
+- `reporting/generator.py` converts findings into `reports/latest.md` and optionally `latest.pdf`.
+- All unit tests pass; CI workflow defined in `.github/workflows/ci.yml`.
+- README includes legal warning and clear quickstart.
+
+EXTRA (nice-to-have):
+- Adapter pattern for LLM (AI) analysis hooks for later integration.
+- Dockerfile for agent to run in contained environment.
+- Example Ansible/one-liner bootstrap for quick deploy.
+
+LEGAL WARNING (must appear in README and CLI help):
+- "Use only on systems you own or have written authorization to test. Unauthorized scanning or exploitation is illegal and unethical."
+
+PRIORITY:
+Implement in small incremental PRs, starting with safe recon module and tests.
+
+CONTACT & REVIEW:
+- Submit PRs to `feature/recon` branch.
+- Add reviewer tag and include demo outputs in PR description.
+
+If anything is ambiguous, assume the most secure, conservative implementation and ask for clarification via GitHub Issue or the PR comments.
+
+END OF BRIEF.
